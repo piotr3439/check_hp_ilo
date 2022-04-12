@@ -61,24 +61,27 @@ def get_args():
 
 
 def print_perfdata(health):
-    print("|")
+    perfdata = ['|']
     for fan in health["fans"]:
-        print_performance_line(fan + "_usage", health['fans'][fan]['speed'][0], '%')
+        perfdata.append(return_performance_line(fan + "_usage", health['fans'][fan]['speed'][0], '%'))
 
     for temp in health["temperature"]:
         if health['temperature'][temp]['currentreading'] != "N/A":
-            print_performance_line(temp + "_temp", health['temperature'][temp]['currentreading'][0])
+            perfdata.append(
+                return_performance_line(temp + "_temp", f"{health['temperature'][temp]['currentreading'][0]}"))
 
-    print_performance_line("present_power_reading", health['power_supply_summary']['present_power_reading'].split(" ")[0])
+    perfdata.append(return_performance_line("present_power_reading",
+                                            health['power_supply_summary']['present_power_reading'].split(" ")[0]))
+    print(' '.join(perfdata))
 
 
 def sane_perfdata_label(label):
     return re.sub(r'[^A-Za-z0-9]+', '_', label)
 
 
-def print_performance_line(label, value, uom=''):
+def return_performance_line(label, value, uom=''):
     label = sane_perfdata_label(label)
-    print(f"\'{label}\'={value}{uom}")
+    return f"\'{label}\'={value}{uom}"
 
 
 def main():
